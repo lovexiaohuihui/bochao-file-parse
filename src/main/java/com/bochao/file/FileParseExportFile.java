@@ -113,10 +113,25 @@ public class FileParseExportFile {
                     for (String modelName : modelNameList) {
                         // 从map中获取对应的设备数据
                         // 获取最后一个_前的数据
+                        // 第一种数据结构 B_A_B_GK20_GK40_BF10_0001
                         int index = modelName.lastIndexOf("_");
                         String leftName  = modelName.substring(0, index);
                         String rightName  = modelName.substring(index,  modelName.length());
                         DeviceInfo writeInfo = map.get(leftName);
+                        if (writeInfo == null) {
+                            // 第二种数据结构 B_A_B_GK20_GK40_BF10_0001_1
+                            int twoIndex = leftName.lastIndexOf("_");
+                            leftName = modelName.substring(0, twoIndex);
+                            rightName  = modelName.substring(twoIndex,  modelName.length());
+                            writeInfo = map.get(leftName);
+                            // 第三种数据结构 B_A_B_GK20_GK40_J002_5001_2_1
+                            if (writeInfo == null) {
+                                int threeIndex = leftName.lastIndexOf("_");
+                                leftName = modelName.substring(0, threeIndex);
+                                rightName  = modelName.substring(threeIndex,  modelName.length());
+                                writeInfo = map.get(leftName);
+                            }
+                        }
                         if (writeInfo != null) {
                             num = num + 1;
                             wirteRow = writeSheet.createRow(num);
